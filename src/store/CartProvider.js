@@ -7,9 +7,26 @@ const defaultCartState={
 }
 
 const cartReducer=(state,action)=>{
-    if(type==="Add"){
-       const updatedItems= state.item.concat(action.item);
-       const updatedTotalAmounts=state.totalAmount + action.item.price*action.item.amount;
+    if(action.type==="Add"){
+        const updatedTotalAmounts=state.totalAmount + action.item.price*action.item.amount;
+
+        const existingCartItemIndex= state.item.findIndex((item)=>item.id===action.item.id)
+        const existingCartItem = state.item[existingCartItemIndex];
+         let updatedItems;
+
+         if(existingCartItem){
+           const updatedItem={
+                ...existingCartItem,
+                amount:existingCartItem.amount+action.item.amount
+             }
+             updatedItems=[...state.item]
+             updatedItems[existingCartItemIndex]=updatedItem
+         }
+             else{
+                updatedItems= state.item.concat(action.item);
+             }
+      
+      
         return (
             {
                 item:updatedItems,
@@ -17,8 +34,25 @@ const cartReducer=(state,action)=>{
             }
         )
     }
-    if(type==="Remove"){
-         return defaultCartState;
+    if(action.type==="Remove"){
+        const existingCartItemIndex= state.item.findIndex((item)=>item.id===action.id)
+        const existingItem = state.item[existingCartItemIndex];
+        const updatedTotalAmounts=state.totalAmount - existingItem.price;
+
+        let updatedItems;
+        if(existingItem.amount ===1){
+            updatedItems=state.item.filter((item)=> item.id !== action.id)
+        }
+        else{
+           const updatedItem={...existingItem,amount:existingItem.amount-1};
+           updatedItems=[...state.item];
+           updatedItems[existingCartItemIndex]=updatedItem;
+        }
+
+        return{
+            item:updatedItems,
+            totalAmount:updatedTotalAmounts
+        }
     }
 
  return defaultCartState;
@@ -35,8 +69,8 @@ const CartProvider =(props)=>{
     }
 
     const cartcontext={
-        items:[],
-        totalAmount:0,
+        items:cartState.item,
+        totalAmount:cartState.totalAmount,
         addItem:addItemToCartHandler,
         removeItem:removeItemFromCartHandler
     }
