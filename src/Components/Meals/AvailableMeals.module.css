@@ -4,13 +4,23 @@
     margin: 2rem auto;
     animation: meals-appear 1s ease-out forwards;
   }
-  
+  .MealsLoading{
+    margin-top: 20px;
+    font-size: 20px;
+    text-align: center;
+    color: white;
+  }
   .meals ul {
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  
+  .MealsError{
+    margin-top: 20px;
+    font-size: 20px;
+    text-align: center;
+    color: rgb(255 8 8);
+  }
   @keyframes meals-appear {
     from {
       opacity: 0;
